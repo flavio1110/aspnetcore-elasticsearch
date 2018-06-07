@@ -1,0 +1,39 @@
+version: '3'
+
+#https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+
+services:
+  elasticsearch:
+    image: elasticsearch:5.6.9-alpine
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - elasticsearch.username=esuser
+      - elasticsearch.password=espass
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:5.6.9
+    container_name: kibana
+    ports:
+      - 5601:5601
+    depends_on: [ elasticsearch ]
+    environment:
+      - SERVER_NAME=localhost
+      - HOST=localhost
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - elasticsearch.username=esuser
+      - elasticsearch.password=espass
+
+volumes:
+  esdata1:
+    driver: local
