@@ -20,9 +20,15 @@ public class RequestLogMiddleware
 
         await this._next(context);
 
-        logger.LogInformation("RequestLogMiddleware -  {url} {duration}", 
-            context.Request.GetDisplayUrl(),
-            sw.ElapsedMilliseconds);
+        var data = new 
+        {
+            Method = context.Request.Method,
+            Url = context.Request.GetDisplayUrl(),
+            Duration = sw.ElapsedMilliseconds,
+            StatusCode = context.Response?.StatusCode
+        };
+
+        logger.LogInformation("Processing {@data}", data);
     }
 
 }

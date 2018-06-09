@@ -15,7 +15,7 @@ namespace es_kibana_aspnetcore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            await Task.Delay(new Random().Next(500, 3000));
+            await Task.Delay(new Random().Next(500, 1500));
 
             return new string[] { "value1", "value2" };
         }

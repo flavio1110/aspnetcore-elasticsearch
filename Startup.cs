@@ -20,9 +20,12 @@ namespace es_kibana_aspnetcore
     {
         public Startup(IConfiguration configuration)
         {
-            Log.Logger = new LoggerConfiguration()                
-               .Enrich.FromLogContext()
+            Log.Logger = new LoggerConfiguration()
                .ReadFrom.Configuration(configuration)
+               .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200")){
+                    CustomDurableFormatter = new ElasticsearchJsonFormatter(renderMessage: false, renderMessageTemplate: false, inlineFields: true),
+                    BufferBaseFilename = "./logs/buffer"
+                })
                .CreateLogger();
 
             Configuration = configuration;
@@ -49,7 +52,7 @@ namespace es_kibana_aspnetcore
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMiddleware<RequestLogMiddleware>();
             app.UseMvc();
         }
